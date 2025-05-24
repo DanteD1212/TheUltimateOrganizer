@@ -4,6 +4,7 @@ import shutil as shu
 
 rutabase = ""
 
+# Eleccion de la ruta base (cosas del usuario)
 while (not os.path.exists(rutabase)):
     print("Si desea salir, escriba s y luego presione Enter")
     rutabase = input("Porfavor introduce la ruta de la carpeta que desear organizar por dentro: ")
@@ -17,12 +18,28 @@ while (not os.path.exists(rutabase)):
 
 
 todoslosarchivos = os.listdir(rutabase) #Lista de archivos y carpetas dentro de la carpeta_origen
+tam = len(todoslosarchivos)
+print(f"Se intentarán mover en total {tam} archivos, ¿estás seguro de continuar?")
+while True:
+    desicion = input("Escriba S/s (Para continuar) o N/n (Para cancelar) y luego presione Enter: ").lower()
+    if desicion == "s":
+        break
+    elif desicion == "n":
+        input("Operación cancelada, presione Enter para salir")
+        sys.exit()
+    else:
+        print("Por favor, escriba S para continuar o N para cancelar.")
+
+
+
+
 
 global carpetas_creadas
 carpetas_creadas=0
 archivos_ignorados = 0
 archivos_movidos = 0
 errores_al_mover = 0
+nombre_script = os.path.basename(__file__)
 
 #Funcion para crear carpetas
 def crear_carpeta(carpetinha, rutabase):
@@ -137,18 +154,32 @@ organizacion = {
 }
 
 
-# Creamos las carpetas principales y subcarpetas usando el poderoso diccionario
-for extension, categoria in organizacion.items():
-    # Carpeta principal (imagenes, codigos, etc.)
+# 1. Identifica las carpetas necesarias
+carpetas_necesarias = set()
+subcarpetas_necesarias = set()
+
+for archivo in todoslosarchivos:
+    if archivo == nombre_script:
+        continue
+    carpeta_origen = os.path.join(rutabase, archivo)
+    if not os.path.isdir(carpeta_origen):
+        _, extension = os.path.splitext(archivo)
+        if extension == "":
+            continue
+        categoria = organizacion.get(extension, "otros")
+        carpetas_necesarias.add(categoria)
+        subcarpetas_necesarias.add((categoria, extension.lstrip(".")))
+
+# 2. Crea solo las carpetas necesarias
+for categoria in carpetas_necesarias:
     crear_carpeta(categoria, rutabase)
-    # Subcarpeta (png, jpg, etc.)
-    subcarpeta = extension.lstrip(".")  #Istrip() quita el "." asi todas las carpetas quedan mas chidas
+for categoria, subcarpeta in subcarpetas_necesarias:
     ruta_categoria = os.path.join(rutabase, categoria)
     crear_carpeta(subcarpeta, ruta_categoria)
 
-#Iteramos la lista de todos los archivos
+# 3. Iteramos la lista de todos los archivos
 for archivo in todoslosarchivos:
-    if archivo == "organizer.py":
+    if archivo == nombre_script:
         continue
     carpeta_origen = os.path.join(rutabase, archivo)
     #Verificamos que no sea una carpeta (esas aun no se como moverlas)
@@ -188,7 +219,7 @@ print("........")
 input("Presiona Enter para salir...")
 
 
-# Notas que ayudan a entender el codigo
+# Notas que ayudan a entender el codigo :O
 # 1. organizacion[".c"] retorna "codigos" (la carpeta)
 # 2. organizacion.get(extension, "otros") retorna tambien la carpeta de la extension, pero si no existe
 # entonces retorna "otros"
