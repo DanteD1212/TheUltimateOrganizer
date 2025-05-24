@@ -68,6 +68,7 @@ Puedes revisar el archivo [`organizer.py`](organizer.py) para ver la lista compl
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autores
 
 [DanteD1212](https://github.com/DanteD1212)
+[KevinCanoZepeda](https://github.com/KevinCanoZepeda)
