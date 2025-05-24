@@ -1,7 +1,7 @@
 import os
 import sys
 import shutil as shu
-
+# XD
 rutabase = ""
 
 # Eleccion de la ruta base (cosas del usuario)
@@ -54,7 +54,7 @@ def crear_carpeta(carpetinha, rutabase):
         if not modo_simulacion:
             os.makedirs(nombre_carpeta)
         carpetas_creadas += 1
-
+# esto no pa xd
 organizacion = {
     # Imagenes
     ".png": "imagenes",
