@@ -15,3 +15,5 @@ __pycache__/
 *.deb # Para Linux
 *.rpm # Para Linux
 /venv/ 
+# archivos pycharm
+.idea/
