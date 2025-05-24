@@ -15,11 +15,9 @@ while (not os.path.exists(rutabase)):
     else:
         break
 
-
-
 todoslosarchivos = os.listdir(rutabase) #Lista de archivos y carpetas dentro de la carpeta_origen
 tam = len(todoslosarchivos)
-print(f"Se intentarán mover en total {tam} archivos, ¿estás seguro de continuar?")
+print(f"\nSe intentarán mover en total {tam} archivos, ¿estás seguro de continuar?")
 while True:
     desicion = input("Escriba S/s (Para continuar) o N/n (Para cancelar) y luego presione Enter: ").lower()
     if desicion == "s":
@@ -30,9 +28,16 @@ while True:
     else:
         print("Por favor, escriba S para continuar o N para cancelar.")
 
+# Preguntar si se desea modo simulación
+while True:
+    print("Nota: El modo simulacion no se recomienda si vas a organizar mas de 100 archivos, ya que imprimira mucha informacion.")
+    simular = input("¿Deseas ejecutar en modo simulación? (S/N): ").lower()
+    if simular in ("s", "n"):
+        break
+    else:
+        print("Por favor, escribe S para sí o N para no.")
 
-
-
+modo_simulacion = (simular == "s")
 
 global carpetas_creadas
 carpetas_creadas=0
@@ -44,11 +49,11 @@ nombre_script = os.path.basename(__file__)
 #Funcion para crear carpetas
 def crear_carpeta(carpetinha, rutabase):
     global carpetas_creadas
-    nombre_carpeta = os.path.join(rutabase, carpetinha) #Por ejemplo si nombre_carpeta es imagenes, creara la carpeta_origen C:/Users/issac/Desktop/THEorganizer/imagenes
+    nombre_carpeta = os.path.join(rutabase, carpetinha)
     if not os.path.exists(nombre_carpeta):
-        os.makedirs(nombre_carpeta)
+        if not modo_simulacion:
+            os.makedirs(nombre_carpeta)
         carpetas_creadas += 1
-        #print(f"La carpeta {carpetinha} ha sido creada exitosamente!") para debugear, favor de ignorar
 
 organizacion = {
     # Imagenes
@@ -153,7 +158,6 @@ organizacion = {
     ".": "otros",
 }
 
-
 # 1. Identifica las carpetas necesarias
 carpetas_necesarias = set()
 subcarpetas_necesarias = set()
@@ -182,25 +186,27 @@ for archivo in todoslosarchivos:
     if archivo == nombre_script:
         continue
     carpeta_origen = os.path.join(rutabase, archivo)
-    #Verificamos que no sea una carpeta (esas aun no se como moverlas)
-    if os.path.isdir(carpeta_origen) == False:
-        nombre, extension = os.path.splitext(archivo) #Separamos el nombre del archivo con su extension
+    if not os.path.isdir(carpeta_origen):
+        nombre, extension = os.path.splitext(archivo)
         if extension == "":
             print(f"El archivo '{archivo}' no tiene extensión, se ignorará.")
             archivos_ignorados += 1
             continue
-        
+
         carpeta_destino = os.path.join(rutabase, organizacion.get(extension, "otros"))
         carpeta_destino = os.path.join(carpeta_destino, extension.lstrip("."))
 
-        #Finalmente movemos el archivo a esa carpeta destino
+        if modo_simulacion:
+            print(f"[SIMULACIÓN] Se movería: '{archivo}' → '{carpeta_destino}'")
+            archivos_movidos += 1
+            continue
+
         try:
             shu.move(carpeta_origen, carpeta_destino)
             archivos_movidos += 1
         except shu.SameFileError:
             print(f"El archivo {archivo} ya existe en la carpeta destino, asi que no se movera para evitar errores :D")
             archivos_ignorados += 1
-
         except PermissionError:
             print(f"No tienes permisos para mover el archivo {archivo}.")
             errores_al_mover += 1
@@ -208,16 +214,16 @@ for archivo in todoslosarchivos:
         print(f"La carpeta {archivo} es una carpeta, por lo tanto no se movera")
         archivos_ignorados += 1
 
-print("Finalizado!")
+print("\nFinalizado!")
+if modo_simulacion:
+    print("¡Esto fue solo una simulación! No se movió ningún archivo realmente.")
 print(f"En total se crearon {carpetas_creadas} carpetas!")
 print(f"Total de archivos movidos: {archivos_movidos}")
 print(f"Total de archivos que fueron ignorados (por no tener extension, ser carpetas o porque ya existian): {archivos_ignorados}")
 print(f"Total de archivos que NO se pudieron mover por permisos: {errores_al_mover}")
 
-print("")
-print("........")
+print("\n............................")
 input("Presiona Enter para salir...")
-
 
 # Notas que ayudan a entender el codigo :O
 # 1. organizacion[".c"] retorna "codigos" (la carpeta)
