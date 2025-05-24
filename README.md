@@ -24,7 +24,7 @@
 2. **Ejecuta el Programa:**
 
    - Haz doble clic en `THE_Organizer.exe`. Se abrirá una ventana de consola.
-   - _Nota:_ Si tu antivirus bloquea la ejecución, puedes revisar el código fuente en [`organizer.py`](organizer.py) para verificar su seguridad.
+   - _Nota:_ Si tu antivirus bloquea la ejecución, ¡No te preocupes! no hay nada de que temer, pero si te preocupa puedes revisar el código fuente en [`organizer.py`](organizer.py) para verificar su seguridad e incluso ejecutarlo tu mismo en algun IDE.
 
 3. **Introduce la Ruta:**
 
