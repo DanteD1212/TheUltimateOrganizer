@@ -1,0 +1,17 @@
+# Archivos de Python
+__pycache__/
+*.pyc
+*.ipynb_checkpoints
+.venv/ 
+
+# Archivos de PyInstaller
+/build/
+/dist/
+*.spec
+*.exe # Para Windows
+*.dmg # Para macOS
+*.pkg # Para macOS
+*.app # Para macOS
+*.deb # Para Linux
+*.rpm # Para Linux
+/venv/ 
